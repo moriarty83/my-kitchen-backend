@@ -2,8 +2,8 @@
 
 one:
   user: one
-  ingredient: one
+  recipe: one
 
 two:
   user: two
-  ingredient: two
+  recipe: two

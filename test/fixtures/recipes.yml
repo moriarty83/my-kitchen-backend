@@ -2,8 +2,12 @@
 
 one:
   name: MyString
+  uri: MyString
+  image_url: MyString
   edemam_id: MyString
 
 two:
   name: MyString
+  uri: MyString
+  image_url: MyString
   edemam_id: MyString

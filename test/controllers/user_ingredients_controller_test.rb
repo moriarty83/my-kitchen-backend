@@ -12,7 +12,7 @@ class UserIngredientsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create user_ingredient" do
     assert_difference('UserIngredient.count') do
-      post user_ingredients_url, params: { user_ingredient: { ingredient_id: @user_ingredient.ingredient_id, user_ie: @user_ingredient.user_ie } }, as: :json
+      post user_ingredients_url, params: { user_ingredient: { ingredient_id: @user_ingredient.ingredient_id, user_id: @user_ingredient.user_id } }, as: :json
     end
 
     assert_response 201
@@ -24,7 +24,7 @@ class UserIngredientsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user_ingredient" do
-    patch user_ingredient_url(@user_ingredient), params: { user_ingredient: { ingredient_id: @user_ingredient.ingredient_id, user_ie: @user_ingredient.user_ie } }, as: :json
+    patch user_ingredient_url(@user_ingredient), params: { user_ingredient: { ingredient_id: @user_ingredient.ingredient_id, user_id: @user_ingredient.user_id } }, as: :json
     assert_response 200
   end
 
