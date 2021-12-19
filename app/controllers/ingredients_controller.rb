@@ -1,10 +1,13 @@
 class IngredientsController < ApplicationController
   before_action :set_ingredient, only: [:show, :update, :destroy]
+  before_action :authorized
 
-  # GET /ingredients
+  ############################
+  ## INDEX ROUTE GET /ingredients
+  ############################
   def index
-    @ingredients = Ingredient.all
 
+    @ingredients = User.find(@user.id).ingredients
     render json: @ingredients
   end
 
@@ -13,14 +16,42 @@ class IngredientsController < ApplicationController
     render json: @ingredient
   end
 
-  # POST /ingredients
+  ############################
+  ## CREATE ROUTE POST /ingredients
+  ############################
   def create
-    @ingredient = Ingredient.new(ingredient_params)
+    user = User.find(@user.id)
 
-    if @ingredient.save
-      render json: @ingredient, status: :created, location: @ingredient
+    # Check to see if INGREDIENT Already Exists
+    foundIngredient = Ingredient.find_by(ingredient_params)
+    # If the ingredient Exists
+    if !!foundIngredient
+      puts "Ingredient Found"
+      # Check to see if the User already owns it.
+      if UserIngredient.exists?(foundIngredient.id)
+        puts "You already own this Ingredient"
+        render json: {"message": "You already own this Ingredient"}
+      else
+        # If the ingredient exists, but the user doesn't own it
+        puts "You don't own this ingredient, but it exists"
+        @user_ingredient = UserIngredient.new(user_id: user.id, ingredient_id: foundIngredient.id)
+        if @user_ingredient.save
+          render json: @user_ingredient, status: :created, location: @user_ingredient
+        else
+          render json: @user_ingredient.errors, status: :unprocessable_entity
+        end
+      end
     else
-      render json: @ingredient.errors, status: :unprocessable_entity
+
+      # If the ingredient doesn't exist, create it through the User.
+      @ingredient = user.ingredients.new(ingredient_params)
+
+      if @ingredient.save
+        render json: @ingredient, status: :created, location: @ingredient
+      else
+
+        render json: @ingredient.errors, status: :unprocessable_entity
+      end
     end
   end
 

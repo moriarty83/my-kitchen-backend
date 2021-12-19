@@ -1,5 +1,6 @@
 class UserIngredientsController < ApplicationController
   before_action :set_user_ingredient, only: [:show, :update, :destroy]
+  before_action 
 
   # GET /user_ingredients
   def index
@@ -10,6 +11,7 @@ class UserIngredientsController < ApplicationController
 
   # GET /user_ingredients/1
   def show
+
     render json: @user_ingredient
   end
 
@@ -33,8 +35,10 @@ class UserIngredientsController < ApplicationController
     end
   end
 
-  # DELETE /user_ingredients/1
+  # DELETE /user_ingredients/:id
   def destroy
+    puts "Deleting"
+    @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: params[:id])
     @user_ingredient.destroy
   end
 

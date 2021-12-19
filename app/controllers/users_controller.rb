@@ -3,8 +3,9 @@ class UsersController < ApplicationController
 
 
 
-    #REGISTER
+    #REGISTERf
     def create
+        puts user_params
         @user = User.create(user_params)
         if @user.valid?
             token = encode_token({user_id: @user.id})
