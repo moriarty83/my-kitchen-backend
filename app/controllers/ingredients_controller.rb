@@ -1,6 +1,8 @@
+require 'uri'
+require 'rest-client'
+
 class IngredientsController < ApplicationController
   before_action :set_ingredient, only: [:show, :update, :destroy]
-  before_action :authorized
 
   ############################
   ## INDEX ROUTE GET /ingredients
@@ -22,8 +24,11 @@ class IngredientsController < ApplicationController
   def create
     user = User.find(@user.id)
 
+    puts "name #{ingredient_params[:name]}"
+
     # Check to see if INGREDIENT Already Exists
-    foundIngredient = Ingredient.find_by(ingredient_params)
+    foundIngredient = Ingredient.find_by(name: ingredient_params[:name])
+    puts "foundIngredient: #{foundIngredient}"
     # If the ingredient Exists
     if !!foundIngredient
       puts "Ingredient Found"
@@ -43,14 +48,25 @@ class IngredientsController < ApplicationController
       end
     else
 
-      # If the ingredient doesn't exist, create it through the User.
-      @ingredient = user.ingredients.new(ingredient_params)
+       # If the ingredient doesn't exist, make API call to Edemam to get it:
+       paramsURI = URI.encode(ingredient_params[:name])
+       url = "https://api.edamam.com/api/food-database/v2/parser?app_id=#{ENV['INGREDIENT_ID']}&app_key=#{ENV['INGREDIENT_KEY']}&ingr=#{paramsURI}&nutrition-type=cooking"
+       puts url
+       response = RestClient.get(url)
+       ingredient = JSON.parse(response)
+       ingredient = ingredient["parsed"][0]["food"]
+       puts ingredient
+       # Create new object to make ingredient
+       newIngredient = user.ingredients.create(:name=>ingredient["label"], :image_url=>ingredient["image"])
+       puts newIngredient
 
-      if @ingredient.save
-        render json: @ingredient, status: :created, location: @ingredient
+      # @ingredient = {:name => ingredient["label"], :image_url => ingredient["image"]}
+
+      if newIngredient.save
+        render json: newIngredient, status: :created, location: newIngredient
       else
 
-        render json: @ingredient.errors, status: :unprocessable_entity
+        render json: newIngredient.errors, status: :unprocessable_entity
       end
     end
   end

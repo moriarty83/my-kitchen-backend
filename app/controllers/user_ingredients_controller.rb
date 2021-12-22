@@ -45,11 +45,13 @@ class UserIngredientsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_ingredient
-      @user_ingredient = UserIngredient.find(params[:id])
+      puts @user
+      @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def user_ingredient_params
+      puts params
       params.require(:user_ingredient).permit(:user_id, :ingredient_id)
     end
 end
