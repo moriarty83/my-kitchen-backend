@@ -8,7 +8,8 @@ class UsersController < ApplicationController
         puts user_params
         @user = User.create(user_params)
         if @user.valid?
-            token = encode_token({user_id: @user.id})
+            exp = Time.now.to_i + 4 * 3600
+            token = encode_token({user_id: @user.id, exp: exp})
             render json: {user: @user, token: token}
         else
             render json: {error: "Invalid username or password"}

@@ -57,7 +57,7 @@ class IngredientsController < ApplicationController
        ingredient = ingredient["parsed"][0]["food"]
        puts ingredient
        # Create new object to make ingredient
-       newIngredient = user.ingredients.create(:name=>ingredient["label"], :image_url=>ingredient["image"])
+       newIngredient = user.ingredients.create(:name=>ingredient["label"], :image_url=>ingredient["image"], :edemam_id=>ingredient["foodId"])
        puts newIngredient
 
       # @ingredient = {:name => ingredient["label"], :image_url => ingredient["image"]}
@@ -93,6 +93,7 @@ class IngredientsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def ingredient_params
+      p params
       params.require(:ingredient).permit(:name, :edemam_id)
     end
 end

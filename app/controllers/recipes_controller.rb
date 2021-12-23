@@ -3,9 +3,9 @@ class RecipesController < ApplicationController
 
   # GET /recipes
   def index
-    @recipes = Recipe.all
+    @recipes = User.find(@user.id).recipes
 
-    render json: @recipes
+    render json: @recipes.select("json")
   end
 
   # GET /recipes/1
@@ -42,15 +42,16 @@ class RecipesController < ApplicationController
     else
 
        # If the recipe doesn't exist, make API call to Edemam to get it:
-       
+      puts "hello"
+      puts recipe_params
 
-      @recipe = {recipe_params}
+      @recipe = Recipe.new(:name => recipe_params["name"], :json => recipe_params["json"])
 
-      if newRecipe.save
-        render json: newRecipe, status: :created, location: newRecipe
+      if @recipe.save
+        render json: @recipe, status: :created, location: @recipe
       else
 
-        render json: newRecipe.errors, status: :unprocessable_entity
+        render json: @recipe.errors, status: :unprocessable_entity
       end
     end
   end
@@ -72,11 +73,13 @@ class RecipesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_recipe
-      @recipe = Recipe.find(params[:id])
+      puts "wee!"
+      puts params
+      @recipe = Recipe.find(params[:name])
     end
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:name, :uri, :image_url, :edemam_id)
+      params.require(:recipe).permit(:name, :json)
     end
 end
