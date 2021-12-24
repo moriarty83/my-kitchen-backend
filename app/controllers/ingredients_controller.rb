@@ -3,6 +3,7 @@ require 'rest-client'
 
 class IngredientsController < ApplicationController
   before_action :set_ingredient, only: [:show, :update, :destroy]
+  before_action :authorized
 
   ############################
   ## INDEX ROUTE GET /ingredients
@@ -22,23 +23,22 @@ class IngredientsController < ApplicationController
   ## CREATE ROUTE POST /ingredients
   ############################
   def create
+    puts @user
     user = User.find(@user.id)
 
     puts "name #{ingredient_params[:name]}"
 
     # Check to see if INGREDIENT Already Exists
     foundIngredient = Ingredient.find_by(name: ingredient_params[:name])
+    puts "Params: #{ingredient_params}"
+    puts "name: #{ingredient_params[:name]}"
     puts "foundIngredient: #{foundIngredient}"
     # If the ingredient Exists
     if !!foundIngredient
       puts "Ingredient Found"
       # Check to see if the User already owns it.
       if UserIngredient.exists?(foundIngredient.id)
-        puts "You already own this Ingredient"
-        render json: {"message": "You already own this Ingredient"}
-      else
-        # If the ingredient exists, but the user doesn't own it
-        puts "You don't own this ingredient, but it exists"
+
         @user_ingredient = UserIngredient.new(user_id: user.id, ingredient_id: foundIngredient.id)
         if @user_ingredient.save
           render json: @user_ingredient, status: :created, location: @user_ingredient

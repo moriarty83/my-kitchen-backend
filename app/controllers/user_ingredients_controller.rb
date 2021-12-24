@@ -1,6 +1,6 @@
 class UserIngredientsController < ApplicationController
   before_action :set_user_ingredient, only: [:show, :update, :destroy]
-  before_action 
+
 
   # GET /user_ingredients
   def index

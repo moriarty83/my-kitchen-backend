@@ -81,6 +81,4 @@ test:
 #
 production:
   <<: *default
-  database: my_kitchen_api_production
-  username: my_kitchen_api
-  password: <%= ENV['MY_KITCHEN_API_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
