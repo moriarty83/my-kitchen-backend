@@ -7,7 +7,6 @@ class UserMailer < ApplicationMailer
         @url = "http://example.com/login"
 
         mail(to: @user.email,
-            bcc: moriarty83@gmail.com,
             subject: 'Welcome to MyKitchen')
         end
     end
