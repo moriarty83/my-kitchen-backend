@@ -9,5 +9,6 @@ class UserMailer < ApplicationMailer
         mail(to: @user.email,
             bcc: moriarty83@gmail.com,
             subject: 'Welcome to MyKitchen')
+        end
     end
 end
