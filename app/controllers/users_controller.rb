@@ -54,20 +54,44 @@ class UsersController < ApplicationController
     end
 
     def delete
-        user = @user
-        puts user
+        user = User.find(@user.id)
+        puts "delete timestamp: #{user.delete_timestamp}"
+        puts !!user.delete_timestamp
         # See if user is eligible for delete.
-        if (!!user.delete_timestamp && user.delete_timestamp + 60*30 < Time.now.to_i)
+        if (!!user.delete_timestamp && user.delete_timestamp + 60*30 > Time.now.to_i)
             puts "I can delete you!"
+            user = User.find(@user.id)
+            if user.ingredients.destroy_all
+                if
+                    user.recipes.destroy_all
+                    if (user.destroy)
+                        render json: user, status: :accepted, location: user
+                    else
+    
+                    render json: user.errors, status: :unprocessable_entity
+                    end
+                else
+                    render json: user.errors, status: :unprocessable_entity
+                end
+            else
+    
+            render json: user.errors, status: :unprocessable_entity
+            end
+        else
+    
+        render json: user.errors, status: :unprocessable_entity
         end
     end
 
     def delete_request
-        user = @user
-        user.update(delete_timestamp: Time.now.to_i)
+        user = User.find(@user.id)
+        now = Time.now.to_i
+        user.update(delete_timestamp: now)
+        puts "now: #{now.class}"
         if user.save
+            puts "Timestamp: #{user.delete_timestamp}"
             # UserMailer.with(user: user).welcome_email.deliver_later
-            UserMailer.with(user: user).delete_request_email.deliver_later
+            # UserMailer.with(user: user).delete_request_email.deliver_later
 
             render json: user, status: :accepted, location: user
           else
