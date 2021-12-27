@@ -1,17 +1,18 @@
 class UsersController < ApplicationController
-    before_action :authorized, only: [:auto_login, :update]
+    before_action :authorized, only: [:auto_login, :update, :delete_request, :delete]
 
 
 
-    #REGISTERf
+    #REGISTER
     def create
         puts user_params
         @user = User.create(user_params)
         if @user.valid?
             exp = Time.now.to_i + 4 * 3600
+            puts "exp: #{exp}"
             token = encode_token({user_id: @user.id, exp: exp})
             UserMailer.with(user: @user).welcome_email.deliver_later
-            render json: {user: @user, token: token}
+            render json: {user: @user, token: token, exp: exp}
         else
             render json: {error: "Invalid username or password"}
         end
@@ -24,8 +25,9 @@ class UsersController < ApplicationController
         if @user && @user.authenticate(params[:password])
             puts ("Good user")
             exp = Time.now.to_i + 4 * 3600
-            token = encode_token({user_id: @user.id})
-            render json: {user: @user, token: token}
+            puts "exp: #{exp}"
+            token = encode_token({user_id: @user.id, exp: exp})
+            render json: {user: @user, token: token, exp: exp}
         else
             render json: {error: "Invalid username or password"}
         end
@@ -36,7 +38,7 @@ class UsersController < ApplicationController
     end
 
 
-    # PATCH/PUT /ingredients/1
+    # PATCH/PUT 
     def update
         puts "updating"
         user = User.find(@user.id)
@@ -51,6 +53,29 @@ class UsersController < ApplicationController
         end
     end
 
+    def delete
+        user = @user
+        puts user
+        # See if user is eligible for delete.
+        if (!!user.delete_timestamp && user.delete_timestamp + 60*30 < Time.now.to_i)
+            puts "I can delete you!"
+        end
+    end
+
+    def delete_request
+        user = @user
+        user.update(delete_timestamp: Time.now.to_i)
+        if user.save
+            # UserMailer.with(user: user).welcome_email.deliver_later
+            UserMailer.with(user: user).delete_request_email.deliver_later
+
+            render json: user, status: :accepted, location: user
+          else
+    
+            render json: user.errors, status: :unprocessable_entity
+          end
+    end
+
   private
 
     def user_params
@@ -60,5 +85,10 @@ class UsersController < ApplicationController
     def update_user_params
         params.require(:user).permit(:nickname)
     end
+
+    def delete_user_params
+        params.require(:user).permit(:email)
+    end
+
 
 end

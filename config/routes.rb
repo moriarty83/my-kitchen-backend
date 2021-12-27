@@ -10,4 +10,6 @@ Rails.application.routes.draw do
   post "/login", to: "users#login"
   get "/auto_login", to: "users#auto_login"
   put "/users", to: "users#update"
+  post "/users/delete", to: "users#delete"
+  get "/users/delete-request", to:"users#delete_request", as: 'user'
 end
