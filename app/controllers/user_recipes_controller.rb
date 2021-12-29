@@ -1,5 +1,5 @@
 class UserRecipesController < ApplicationController
-  before_action :set_user_recipe, only: [:show, :update, :destroy]
+  before_action :set_user_recipe, only: [:show, :update]
 
   # GET /user_recipes
   def index
@@ -35,7 +35,12 @@ class UserRecipesController < ApplicationController
 
   # DELETE /user_recipes/1
   def destroy
-    @user_recipe.destroy
+    recipe = UserRecipe.find_by(user_id: @user.id, recipe_id: params[:id])
+    if recipe.destroy
+      render json: recipe, status: :accepted
+    else
+      render json: recipe 
+    end
   end
 
   private

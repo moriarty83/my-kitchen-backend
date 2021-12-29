@@ -29,7 +29,8 @@ class UsersController < ApplicationController
             token = encode_token({user_id: @user.id, exp: exp})
             render json: {user: @user, token: token, exp: exp}
         else
-            render json: {error: "Invalid username or password"}
+            "Bad user"
+            render json: @user.errors, status: :unprocessable_entity
         end
     end
 
@@ -90,8 +91,7 @@ class UsersController < ApplicationController
         puts "now: #{now.class}"
         if user.save
             puts "Timestamp: #{user.delete_timestamp}"
-            # UserMailer.with(user: user).welcome_email.deliver_later
-            # UserMailer.with(user: user).delete_request_email.deliver_later
+            UserMailer.with(user: @user).delete_request_email.deliver_later
 
             render json: user, status: :accepted, location: user
           else

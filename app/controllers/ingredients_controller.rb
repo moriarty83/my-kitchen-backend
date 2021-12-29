@@ -25,9 +25,6 @@ class IngredientsController < ApplicationController
   def create
     puts @user
     user = User.find(@user.id)
-    puts "saving"
-      UserMailer.with(user: user).welcome_email.deliver_later
-
     puts "name #{ingredient_params[:name]}"
 
     # Check to see if INGREDIENT Already Exists

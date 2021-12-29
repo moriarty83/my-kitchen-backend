@@ -3,9 +3,10 @@ class RecipesController < ApplicationController
 
   # GET /recipes
   def index
+    puts "getting user recipes"
     @recipes = User.find(@user.id).recipes
 
-    render json: @recipes.select("json")
+    render json: @recipes
   end
 
   # GET /recipes/1
@@ -26,15 +27,16 @@ class RecipesController < ApplicationController
     if !!foundRecipe
       puts "Recipe Found"
       # Check to see if the User already owns it.
-      if UserRecipe.exists?(foundRecipe.id)
+      if user.recipes.exists?(foundRecipe.id)
         puts "You already own this Recipe"
-        render json: {"message": "You already have this Recipe"}
+        render json: @user_recipe, status: :unprocessable_entity
       else
         # If the recipe exists, but the user doesn't own it
         puts "You don't own this recipe, but it exists"
         @user_recipe = UserRecipe.new(user_id: user.id, recipe_id: foundRecipe.id)
         if @user_recipe.save
-          render json: @user_recipe, status: :created, location: @user_recipe
+          puts user.recipes
+          render json: user.recipes, status: :created, location: user
         else
           render json: @user_recipe.errors, status: :unprocessable_entity
         end
@@ -48,7 +50,8 @@ class RecipesController < ApplicationController
       @recipe = Recipe.new(:name => recipe_params["name"], :json => recipe_params["json"])
 
       if @recipe.save
-        render json: @recipe, status: :created, location: @recipe
+        
+        render json: user.recipes, status: :created, location: user
       else
 
         render json: @recipe.errors, status: :unprocessable_entity
@@ -67,7 +70,7 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1
   def destroy
-    @recipe.destroy
+    
   end
 
   private
