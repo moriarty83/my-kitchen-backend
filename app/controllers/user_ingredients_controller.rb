@@ -39,7 +39,11 @@ class UserIngredientsController < ApplicationController
   def destroy
     puts "Deleting"
     @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: params[:id])
-    @user_ingredient.destroy
+    if @user_ingredient.destroy 
+      render json: @user.ingredients, status: :accepted
+    else
+      render json: @user.ingredinets, status: :unprocessable_entity
+    end
   end
 
   private

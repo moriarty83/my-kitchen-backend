@@ -25,26 +25,27 @@ class IngredientsController < ApplicationController
   def create
     puts @user
     user = User.find(@user.id)
-    puts "name #{ingredient_params[:name]}"
+    puts "name is #{ingredient_params[:name]}"
 
     # Check to see if INGREDIENT Already Exists
-    foundIngredient = Ingredient.find_by(name: ingredient_params[:name])
+    name = ingredient_params[:name].titleize
+    p name.capitalize
+    foundIngredient = Ingredient.find_by(name: ingredient_params[:name].titleize)
     puts "Params: #{ingredient_params}"
     puts "name: #{ingredient_params[:name]}"
     puts "foundIngredient: #{foundIngredient}"
+    puts Ingredient.exists?(@ingredient)
+    puts user.ingredients.exists?(@ingredient)
     # If the ingredient Exists
     if !!foundIngredient
       puts "Ingredient Found"
       # Check to see if the User already owns it.
-      if UserIngredient.exists?(foundIngredient.id)
-
         @user_ingredient = UserIngredient.new(user_id: user.id, ingredient_id: foundIngredient.id)
         if @user_ingredient.save
           render json: @user_ingredient, status: :created, location: @user_ingredient
         else
           render json: @user_ingredient.errors, status: :unprocessable_entity
         end
-      end
     else
 
        # If the ingredient doesn't exist, make API call to Edemam to get it:
@@ -87,7 +88,7 @@ class IngredientsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_ingredient
-      @ingredient = Ingredient.find(params[:id])
+      @ingredient = Ingredient.find_by(params[:name].capitalize)
     end
 
     # Only allow a list of trusted parameters through.
