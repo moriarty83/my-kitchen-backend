@@ -11,6 +11,7 @@ class IngredientsController < ApplicationController
   def index
 
     @ingredients = User.find(@user.id).ingredients
+    puts @ingredients
     render json: @ingredients
   end
 
@@ -42,7 +43,7 @@ class IngredientsController < ApplicationController
       # Check to see if the User already owns it.
         @user_ingredient = UserIngredient.new(user_id: user.id, ingredient_id: foundIngredient.id)
         if @user_ingredient.save
-          render json: @user_ingredient, status: :created, location: @user_ingredient
+          render json: @user.ingredients, status: :created, location: @user_ingredient
         else
           render json: @user_ingredient.errors, status: :unprocessable_entity
         end
@@ -63,7 +64,7 @@ class IngredientsController < ApplicationController
       # @ingredient = {:name => ingredient["label"], :image_url => ingredient["image"]}
 
       if newIngredient.save
-        render json: newIngredient, status: :created, location: newIngredient
+        render json: @user.ingredients, status: :created, location: user
       else
 
         render json: newIngredient.errors, status: :unprocessable_entity

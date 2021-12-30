@@ -1,6 +1,6 @@
 class UserIngredientsController < ApplicationController
   before_action :set_user_ingredient, only: [:show, :update, :destroy]
-
+  # before_action :authorized
 
   # GET /user_ingredients
   def index
@@ -40,17 +40,22 @@ class UserIngredientsController < ApplicationController
     puts "Deleting"
     @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: params[:id])
     if @user_ingredient.destroy 
+      puts "gee!"
+      puts @user
+      puts "wee!"
       render json: @user.ingredients, status: :accepted
     else
-      render json: @user.ingredinets, status: :unprocessable_entity
+      render json: @user.ingredients, status: :unprocessable_entity
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_ingredient
-      puts @user
-      @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: params[:id])
+      id = params[:id]
+      puts id
+      puts "user id: #{@user}"
+      @user_ingredient = UserIngredient.find_by(user_id: @user.id, ingredient_id: id)
     end
 
     # Only allow a list of trusted parameters through.

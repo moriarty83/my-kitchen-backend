@@ -1,5 +1,6 @@
 class UserRecipesController < ApplicationController
   before_action :set_user_recipe, only: [:show, :update]
+  before_action :authorized
 
   # GET /user_recipes
   def index
@@ -18,7 +19,8 @@ class UserRecipesController < ApplicationController
     @user_recipe = UserRecipe.new(user_recipe_params)
 
     if @user_recipe.save
-      render json: @user_recipe, status: :created, location: @user_recipe
+      
+      render json: @user.recipes, status: :created
     else
       render json: @user_recipe.errors, status: :unprocessable_entity
     end
@@ -37,9 +39,9 @@ class UserRecipesController < ApplicationController
   def destroy
     recipe = UserRecipe.find_by(user_id: @user.id, recipe_id: params[:id])
     if recipe.destroy
-      render json: recipe, status: :accepted
+      render json: @user.recipes, status: :accepted
     else
-      render json: recipe 
+      render json: @user.recipes, status: :unprocessable_entity
     end
   end
 
