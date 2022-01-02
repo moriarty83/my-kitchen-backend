@@ -41,11 +41,16 @@ class IngredientsController < ApplicationController
     if !!foundIngredient
       puts "Ingredient Found"
       # Check to see if the User already owns it.
+        if user.ingredients.exists?(foundIngredient.id)
+          puts "You already own this Ingredient"
+          render json: @user.ingredients, status: :unprocessable_entity
         @user_ingredient = UserIngredient.new(user_id: user.id, ingredient_id: foundIngredient.id)
-        if @user_ingredient.save
-          render json: @user.ingredients, status: :created, location: @user_ingredient
         else
-          render json: @user_ingredient.errors, status: :unprocessable_entity
+          if @user_ingredient.save
+            render json: @user.ingredients, status: :created, location: @user_ingredient
+          else
+            render json: @user_ingredient.errors, status: :unprocessable_entity
+          end
         end
     else
 
