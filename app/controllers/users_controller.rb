@@ -33,7 +33,7 @@ class UsersController < ApplicationController
             exp = Time.now.to_i + 4 * 3600
             puts "exp: #{exp}"
             token = encode_token({user_id: @user.id, exp: exp})
-            render json: {user: @user, token: token, exp: exp}
+            render json: {user: @user, token: token, nickname: @user.nickname, exp: exp}
         else
             "Bad user"
             render json: @user.errors, status: :unprocessable_entity
@@ -110,8 +110,8 @@ class UsersController < ApplicationController
 
     def user_params 
 
-        params.permit(:email, :password, :nickname)
-        @user_params = {email: params[:formData][:email], password: params[:formData][:password], nickname: params[:formData][:nickname]}
+        params.permit(:email, :password, :nickname, :icon)
+        @user_params = {email: params[:formData][:email], password: params[:formData][:password], nickname: params[:formData][:nickname], icon: params[:formData][:icon]}
     end
 
     def update_user_params
