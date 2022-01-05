@@ -5,16 +5,22 @@ class UsersController < ApplicationController
 
     #REGISTER
     def create
+        puts "Data"
+        puts params[:formData][:email]
+        puts "End data"
         puts user_params
         @user = User.create(user_params)
+        puts "ID"
+        puts @user.id
         if @user.valid?
+            populate_starters
             exp = Time.now.to_i + 4 * 3600
             puts "exp: #{exp}"
             token = encode_token({user_id: @user.id, exp: exp})
             UserMailer.with(user: @user).welcome_email.deliver_later
             render json: {user: @user, token: token, exp: exp}
         else
-            render json: {error: "Invalid username or password"}
+            render json: @user.errors, status: :unprocessable_entity
         end
     end
 
@@ -102,8 +108,10 @@ class UsersController < ApplicationController
 
   private
 
-    def user_params
+    def user_params 
+
         params.permit(:email, :password, :nickname)
+        @user_params = {email: params[:formData][:email], password: params[:formData][:password], nickname: params[:formData][:nickname]}
     end
 
     def update_user_params
@@ -112,6 +120,17 @@ class UsersController < ApplicationController
 
     def delete_user_params
         params.require(:user).permit(:email)
+    end
+
+    def populate_starters
+        puts "USER"
+        puts @user.id
+        if params[:starterIngredients].length() > 0
+            for item in params[:starterIngredients] do
+                user_ing = UserIngredient.new(user_id: @user.id, ingredient_id: item[:ingredient_id])
+                user_ing.save
+            end
+        end
     end
 
 
