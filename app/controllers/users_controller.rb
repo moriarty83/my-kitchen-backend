@@ -33,7 +33,7 @@ class UsersController < ApplicationController
             exp = Time.now.to_i + 4 * 3600
             puts "exp: #{exp}"
             token = encode_token({user_id: @user.id, exp: exp})
-            render json: {user: @user, token: token, nickname: @user.nickname, exp: exp}
+            render json: {user: @user, token: token, exp: exp}
         else
             "Bad user"
             render json: @user.errors, status: :unprocessable_entity
@@ -50,11 +50,17 @@ class UsersController < ApplicationController
         puts "updating"
         user = User.find(@user.id)
         newNickname = update_user_params["nickname"]
-        user.update(nickname: newNickname)
+        newIcon = update_user_params["icon"]
+        user.update(nickname: newNickname, icon: newIcon)
         
         if user.save
-            puts "I'm updated!"
-            render json: user
+            user = User.find(@user.id)
+            exp = Time.now.to_i + 4 * 3600
+            puts "exp: #{exp}"
+            token = encode_token({user_id: @user.id, exp: exp})
+            puts @user.nickname
+
+            render json: {user: user, token: token, exp: exp}
         else
             render json: "no updat"
         end
@@ -115,7 +121,7 @@ class UsersController < ApplicationController
     end
 
     def update_user_params
-        params.require(:user).permit(:nickname)
+        params.require(:user).permit(:nickname, :icon)
     end
 
     def delete_user_params

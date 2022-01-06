@@ -32,11 +32,11 @@ class IngredientsController < ApplicationController
     name = ingredient_params[:name].titleize
     p name.capitalize
     foundIngredient = Ingredient.find_by(name: ingredient_params[:name].titleize)
-    puts "Params: #{ingredient_params}"
-    puts "name: #{ingredient_params[:name]}"
-    puts "foundIngredient: #{foundIngredient}"
-    puts Ingredient.exists?(@ingredient)
-    puts user.ingredients.exists?(@ingredient)
+    # puts "Params: #{ingredient_params}"
+    # puts "name: #{ingredient_params[:name]}"
+    # puts "foundIngredient: #{foundIngredient}"
+    # puts Ingredient.exists?(@ingredient)
+    # puts user.ingredients.exists?(@ingredient)
     # If the ingredient Exists
     if !!foundIngredient
       puts "Ingredient Found"
