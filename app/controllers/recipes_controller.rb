@@ -47,10 +47,9 @@ class RecipesController < ApplicationController
       puts "hello"
       puts recipe_params
 
-      @recipe = user.recipes.new(:name => recipe_params["name"], :json => recipe_params["json"])
+      @recipe = user.recipes.create(:name => recipe_params["name"], :json => recipe_params["json"])
 
       if @recipe.save
-        
         
         render json: user.recipes, status: :created, location: user
       else

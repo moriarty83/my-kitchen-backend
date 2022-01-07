@@ -13,7 +13,7 @@ class UserMailer < ApplicationMailer
 
     def delete_request_email
         @user = params[:user]
-        @url = "http://localhost:3001/mykitchen/delete/#{rand(100000..999999)}"
+        @url = "https://my-kitchen-site.netlify.app/mykitchen/delete/#{rand(100000..999999)}"
 
         mail(to: @user.email,
             subject: 'MyKitchen - Account Change Request')
