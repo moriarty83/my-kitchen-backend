@@ -112,31 +112,15 @@ class UsersController < ApplicationController
           end
     end
 
-    def generate_password_token!
-        self.reset_password_token = generate_token
-        self.reset_password_sent_at = Time.now.utc
-        save!
-       end
-       
-       def password_token_valid?
-        (self.reset_password_sent_at + 4.hours) > Time.now.utc
-       end
-       
-       def reset_password!(password)
-        self.reset_password_token = nil
-        self.password = password
-        save!
-    end
-
     def forgot
         if params[:email].blank? # check if email is present
             return render json: {error: 'Email not present'}
         end
 
         user = User.find_by(email: params[:email]) # if present find user by email
-        puts user
+
         if user.present?
-            user.generate_password_token #generate pass token
+            generate_password_token(user) #generate pass token
             UserMailer.with(user: @user).welcome_email.deliver_later
             render json: {status: 'ok'}, status: :ok
         else
@@ -163,6 +147,7 @@ class UsersController < ApplicationController
             render json: {error:  ['Link not valid or expired. Try generating a new link.']}, status: :not_found
         end
     end
+
 
   private
 
@@ -191,9 +176,25 @@ class UsersController < ApplicationController
         end
     end
 
+    def generate_password_token(user)
+        user.reset_password_token = generate_token
+        user.reset_password_sent_at = Time.now.utc
+        save!
+       end
+       
+       def password_token_valid?
+        (user.reset_password_sent_at + 4.hours) > Time.now.utc
+       end
+       
+       def reset_password!(password)
+        user.reset_password_token = nil
+        user.password = password
+        save!
+    end
+
     def generate_token
         SecureRandom.hex(10)
-       end
+    end
 
 
 end
