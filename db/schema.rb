@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_162845) do
+ActiveRecord::Schema.define(version: 2022_02_01_002823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 2022_01_05_162845) do
     t.string "nickname"
     t.integer "delete_timestamp"
     t.string "icon"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
   end
 
   add_foreign_key "recipe_ingredients", "ingredients"
