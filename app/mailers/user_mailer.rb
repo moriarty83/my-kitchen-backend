@@ -19,11 +19,4 @@ class UserMailer < ApplicationMailer
             subject: 'MyKitchen - Account Change Request')
         
     end
-
-    def forgot_password_email
-        user = User.find_by(email: email.downcase)
-        @url = "url here"
-        mail(to: user.email,
-            subject: 'MyKitchen - Account Change Request')
-
 end
