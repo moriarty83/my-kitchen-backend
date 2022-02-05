@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :recipes
   resources :user_ingredients
   resources :ingredients
+  resources :password
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 
   resource :users, only: [:create]
@@ -13,7 +14,7 @@ Rails.application.routes.draw do
   post "/users/delete", to: "users#delete"
   get "/users/delete-request", to:"users#delete_request", as: 'user'
 
-  post '/password/forgot', to: 'password#forgot'
-  post '/password/reset', to: 'password#reset'
-  put '/password/update', to: 'password#update'
+  post '/password/forgot', to: 'passwords#forgot'
+  post '/password/reset', to: 'passwords#reset'
+  put '/password/update', to: 'passwords#update'
 end
