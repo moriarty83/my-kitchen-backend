@@ -12,4 +12,8 @@ Rails.application.routes.draw do
   put "/users", to: "users#update"
   post "/users/delete", to: "users#delete"
   get "/users/delete-request", to:"users#delete_request", as: 'user'
+
+  post '/password/forgot', to: 'password#forgot'
+  post '/password/reset', to: 'password#reset'
+  put '/password/update', to: 'password#update'
 end
