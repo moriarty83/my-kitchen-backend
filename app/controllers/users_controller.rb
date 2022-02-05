@@ -121,7 +121,7 @@ class UsersController < ApplicationController
 
         if user.present?
             generate_password_token(user) #generate pass token
-            UserMailer.with(user: @user).welcome_email.deliver_later
+            UserMailer.with(user: user).welcome_email.deliver_later
             render json: {status: 'ok'}, status: :ok
         else
             render json: {error: ['Email address not found. Please check and try again.']}, status: :not_found
