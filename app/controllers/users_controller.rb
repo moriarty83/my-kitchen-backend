@@ -179,7 +179,7 @@ class UsersController < ApplicationController
     def generate_password_token(user)
         user.reset_password_token = generate_token
         user.reset_password_sent_at = Time.now.utc
-        save!
+        user.save
        end
        
        def password_token_valid?
