@@ -120,7 +120,7 @@ class UsersController < ApplicationController
         @user = User.find_by(email: params[:email]) # if present find user by email
         puts @user
         if @user.present?
-            generate_password_token(user) #generate pass token
+            generate_password_token(@user) #generate pass token
             UserMailer.with(user: @user).reset_password_email.deliver_later
             render json: {status: 'ok'}, status: :ok
         else
