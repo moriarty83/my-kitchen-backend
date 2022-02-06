@@ -19,4 +19,13 @@ class UserMailer < ApplicationMailer
             subject: 'MyKitchen - Account Change Request')
         
     end
+
+    def reset_password_email
+        @user = params[:user]
+        @url = "https://my-kitchen-site.netlify.app/mykitchen/reset?token=#{rand(user.reset_password_token)}"
+
+        mail(to: @user.email,
+            subject: 'MyKitchen - Account Change Request')
+        
+    end
 end
