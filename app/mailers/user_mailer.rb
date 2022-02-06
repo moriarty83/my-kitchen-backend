@@ -21,6 +21,7 @@ class UserMailer < ApplicationMailer
     end
 
     def reset_password_email
+        puts params[:user]
         @user = params[:user]
         @url = "https://my-kitchen-site.netlify.app/mykitchen/reset?token=#{rand(user.reset_password_token)}"
 
