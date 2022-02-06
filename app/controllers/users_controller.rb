@@ -118,7 +118,7 @@ class UsersController < ApplicationController
         end
 
         @user = User.find_by(email: params[:email]) # if present find user by email
-        put @user
+        puts @user
         if user.present?
             generate_password_token(user) #generate pass token
             UserMailer.with(user: @user).reset_password_email.deliver_later
