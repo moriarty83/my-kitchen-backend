@@ -138,10 +138,10 @@ class UsersController < ApplicationController
         user = User.find_by(reset_password_token: token)
 
         if user.present? && password_token_valid(user)
-            if user.reset_password(params[:password], user)
-            render json: {status: 'ok'}, status: :ok
+            if reset_password(params[:password], user)
+                render json: {status: 'ok'}, status: :ok
             else
-            render json: {error: user.errors.full_messages}, status: :unprocessable_entity
+                render json: {error: user.errors.full_messages}, status: :unprocessable_entity
             end
         else
             render json: {error:  ['Link not valid or expired. Try generating a new link.']}, status: :not_found
