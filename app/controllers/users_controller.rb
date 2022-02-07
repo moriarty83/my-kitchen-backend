@@ -137,7 +137,7 @@ class UsersController < ApplicationController
 
         user = User.find_by(reset_password_token: token)
 
-        if user.present? && password_token_valid?
+        if user.present? && password_token_valid(user)
             if user.reset_password!(params[:password])
             render json: {status: 'ok'}, status: :ok
             else
@@ -182,11 +182,11 @@ class UsersController < ApplicationController
         user.save
        end
        
-       def password_token_valid?
-        (user.reset_password_sent_at + 4.hours) > Time.now.utc
-       end
+    def password_token_valid(user)
+    (user.reset_password_sent_at + 4.hours) > Time.now.utc
+    end
        
-       def reset_password!(password)
+    def reset_password!(password)
         user.reset_password_token = nil
         user.password = password
         save!
