@@ -189,7 +189,7 @@ class UsersController < ApplicationController
     def reset_password(password, user)
         user.reset_password_token = nil
         user.password = password
-        save!
+        user.save
     end
 
     def generate_token
