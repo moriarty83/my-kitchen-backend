@@ -137,7 +137,7 @@ class UsersController < ApplicationController
 
         user = User.find_by(reset_password_token: token)
 
-        if user.present? && user.password_token_valid?
+        if user.present? && password_token_valid?
             if user.reset_password!(params[:password])
             render json: {status: 'ok'}, status: :ok
             else
